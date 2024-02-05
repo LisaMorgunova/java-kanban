@@ -4,28 +4,23 @@ package Model;
     import java.util.List;
 
 public class Epic extends Task {
-    private List<SubTask> subTasks = new ArrayList<>();
 
-    public Epic(String name) {
-        super(name);
+    private List<Integer> subTasksIds;
+
+    public Epic(String name, String description) {
+        super(name, description);
+        this.subTasksIds = new ArrayList<>();
     }
 
-    public void addTask(SubTask subTask) {
-        subTasks.add(subTask);
+    public List<Integer> getSubTasksIds() {
+        return new ArrayList<>(subTasksIds);
     }
 
-    public List<SubTask> getSubTasks() {
-        return new ArrayList<>(subTasks);
+    public void addSubTaskId(int id) {
+        subTasksIds.add(id);
     }
 
-    @Override
-    public void calculateStatus() {
-        if (subTasks.isEmpty()) {
-            setStatus(Status.NEW);
-        } else if (subTasks.stream().allMatch(subTask -> subTask.getStatus() == Status.DONE)) {
-            setStatus(Status.DONE);
-        } else {
-            setStatus(Status.IN_PROGRESS);
-        }
+    public void removeSubTaskId(Integer id) {
+        subTasksIds.remove(id);
     }
 }
