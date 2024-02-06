@@ -18,10 +18,13 @@ public class Main { // постаралась все учесть :)
         SubTask subTask2 = taskManager.createSubTask(new SubTask("Подзадача 1 для эпика 2", "Описание подзадачи 2", epic2.getId()));
         SubTask subTask3 = taskManager.createSubTask(new SubTask("Подзадача 2 для эпика 2", "Описание подзадачи 3", epic2.getId()));
 
+        System.out.println(taskManager.getEpicById(epic2.getId()).getSubTasksIds());
+
         taskManager.updateTaskStatus(subTask1.getId(), Status.DONE);
         taskManager.updateTaskStatus(subTask2.getId(), Status.IN_PROGRESS);
         taskManager.updateTaskStatus(subTask3.getId(), Status.DONE);
 
+        System.out.println(taskManager.getEpicById(epic2.getId()).getStatus());
 
         System.out.println("\nПосле обновления статусов:");
         printEpics(taskManager.getAllEpics());
