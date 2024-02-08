@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Iterator;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private LinkedList<Task> history = new LinkedList<>();
+    private final LinkedList<Task> history = new LinkedList<>();
 
     @Override
     public void add(Task task) {
