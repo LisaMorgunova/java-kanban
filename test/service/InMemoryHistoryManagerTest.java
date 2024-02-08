@@ -21,7 +21,6 @@ class InMemoryHistoryManagerTest {
         task2 = new Task("Task 2", Status.NEW, "Description 2");
         task1.setId(1);
         task2.setId(2);
-        // Создаем 11-ю задачу для тестирования ограничения истории
         task11 = new Task("Task 11", Status.NEW, "Description 11");
         task11.setId(11);
     }
@@ -47,7 +46,10 @@ class InMemoryHistoryManagerTest {
         historyManager.add(task11);
         List<Task> history = historyManager.getHistory();
         assertEquals(10, history.size(), "История не должна превышать 10 задач.");
-        assertFalse(history.contains(task1), "Первая задача должна быть удалена из истории.");
+        Task t = new Task("Task 1", Status.NEW, "Description 1");
+        t.setId(1);
+        historyManager.add(t);
+        assertFalse(history.stream().anyMatch(task -> "Task 1".equals(task.getName())), "Первая задача должна быть удалена из истории.");
         assertTrue(history.contains(task11), "11-я задача должна быть в истории.");
     }
 
