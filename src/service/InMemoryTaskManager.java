@@ -84,7 +84,6 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateTask(Task task) {
         if (tasks.containsKey(task.getId())) {
             tasks.put(task.getId(), task);
-            historyManager.add(task);
         }
     }
 
@@ -93,7 +92,6 @@ public class InMemoryTaskManager implements TaskManager {
         if (subTasks.containsKey(subTask.getId())) {
             subTasks.put(subTask.getId(), subTask);
             updateEpicStatus(subTask.getEpicId());
-            historyManager.add(subTask);
         }
     }
 
