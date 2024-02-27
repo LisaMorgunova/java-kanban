@@ -7,6 +7,7 @@ import model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class InMemoryTaskManagerTest {
 
@@ -20,9 +21,10 @@ class InMemoryTaskManagerTest {
     @Test
     void whenCreatingTask_thenTaskIsStored() {
         Task task = new Task("Task 1", Status.NEW, "Task Description");
-        Task createdTask = taskManager.createTask(task);
-        assertNotNull(createdTask, "Created task should not be null");
-        assertEquals(task.getName(), createdTask.getName(), "Task names should match");
+        task = taskManager.createTask(task);
+        Task taskExpected = taskManager.getTaskById(task.getId());
+        assertNotNull(taskExpected, "Created task should not be null");
+        assertEquals(task, taskExpected, "Tasks should match");
     }
 
     @Test
@@ -59,11 +61,13 @@ class InMemoryTaskManagerTest {
     @Test
     void whenGettingAllTasks_thenCorrectListReturned() {
         taskManager.createTask(new Task("Task 1", Status.NEW, "Task Description"));
-        taskManager.createEpic(new Epic("Epic 1", "Epic Description", Status.NEW));
-        taskManager.createSubTask(new SubTask("SubTask 1", "SubTask Description", Status.NEW, 1));
+        Epic epic = taskManager.createEpic(new Epic("Epic 1", "Epic Description", Status.NEW));
+        taskManager.createSubTask(new SubTask("SubTask 1", "SubTask Description", Status.NEW, epic.getId()));
 
         assertFalse(taskManager.getAllTasks().isEmpty(), "List of all tasks should not be empty");
-        assertEquals(2, taskManager.getAllTasks().size(), "There should be two tasks (1 Task, 1 Epic)");
+        assertEquals(1, taskManager.getAllTasks().size(), "There should be task (1 task)");
+        assertEquals(1, taskManager.getAllEpics().size(), "There should be epic (1 epic)");
+        assertEquals(1, taskManager.getAllSubTasks().size(), "There should be subTask (1 subTask)");
     }
 
     @Test
@@ -79,10 +83,12 @@ class InMemoryTaskManagerTest {
         Epic epic = taskManager.createEpic(new Epic("Epic 1", "Epic Description", Status.NEW));
         SubTask subTask1 = taskManager.createSubTask(new SubTask("SubTask 1", "SubTask Description", Status.NEW, epic.getId()));
         SubTask subTask2 = taskManager.createSubTask(new SubTask("SubTask 2", "SubTask Description", Status.NEW, epic.getId()));
-
-        taskManager.deleteSubTask(subTask1.getId());
+        assertEquals(Status.NEW, epic.getStatus(), "Epic status should be NEW if all subtasks are NEW or if there's at least one subtask left.");
+        taskManager.updateTaskStatus(subTask1.getId(), Status.IN_PROGRESS);
         Epic updatedEpic = taskManager.getEpicById(epic.getId());
-        assertEquals(Status.NEW, updatedEpic.getStatus(), "Epic status should be NEW if all subtasks are NEW or if there's at least one subtask left.");
+
+        assertEquals(Status.IN_PROGRESS, updatedEpic.getStatus(), "Epic status should be NEW if all subtasks are NEW or if there's at least one subtask left.");
+        taskManager.deleteSubTask(subTask1.getId());
 
         taskManager.updateTaskStatus(subTask2.getId(), Status.DONE);
         updatedEpic = taskManager.getEpicById(epic.getId());

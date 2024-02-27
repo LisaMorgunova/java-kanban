@@ -11,7 +11,7 @@ public class Epic extends Task {
     }
 
     public List<Integer> getSubTaskIds() {
-        return new ArrayList<>(subTaskIds);
+        return subTaskIds;
     }
 
     public void addSubTaskId(int id) {
@@ -20,5 +20,23 @@ public class Epic extends Task {
 
     public void removeSubTaskId(Integer id) {
         subTaskIds.remove(id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Epic epic = (Epic) o;
+
+        return subTaskIds.equals(epic.subTaskIds);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + subTaskIds.hashCode();
+        return result;
     }
 }
