@@ -3,81 +3,38 @@ package service;
 import model.Task;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.HashMap;
-
+import java.util.Iterator;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private static class Node {
-        Task item;
-        Node next;
-        Node prev;
-
-        Node(Node prev, Task element, Node next) {
-            this.item = element;
-            this.next = next;
-            this.prev = prev;
-        }
-    }
-
-
-    HashMap<Integer, Node> history = new HashMap<>();
-    Node first;
-    Node last;
+    private final LinkedList<Task> history = new LinkedList<>();
 
     @Override
     public void add(Task task) {
-        Node node = history.get(task.getId());
-        if (node != null) removeNode(node);
-        linkLast(task);
+        if (history.size() >= 10) {
+            history.removeFirst();
+        }
+        history.add(task);
     }
 
     @Override
     public List<Task> getHistory() {
-        List <Task> linkedList = new LinkedList<>();
-        Node node = first;
-        while (node != null) {
-            linkedList.add(node.item);
-            node = node.next;
-        }
-        return linkedList;
+        return new LinkedList<>(history);
     }
 
     @Override
     public void remove(int id) {
-        Node node = history.get(id);
-        if (node != null) removeNode(node);
+        Iterator<Task> iterator = history.iterator();
+        while (iterator.hasNext()) {
+            Task task = iterator.next();
+            if (task.getId() == id) {
+                iterator.remove();
+                break;
+            }
+        }
     }
 
     @Override
     public void clear() {
-    last = null;
-    first = null;
-    history.clear();
-    }
-
-   private void linkLast(Task task) {
-        final Node l = last;
-        final Node newNode = new Node(l, task, null);
-        last = newNode;
-        if (l == null) {
-            first = newNode;
-        } else {
-            l.next = newNode;
-        }
-        history.put(task.getId(), newNode);
-    }
-
-    private void removeNode(Node node) {
-        Node left = node.prev;
-        Node right = node.next;
-        if (left != null) {
-            left.next = right;
-        }
-        if (right != null) {
-            right.prev = left;
-        }
-        history.remove(node.item.getId());
-        if (node == first) first = node.next;
-        if (node == last) last = node.prev;
+        history.clear();
     }
 }
