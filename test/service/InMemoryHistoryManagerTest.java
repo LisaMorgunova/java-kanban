@@ -71,4 +71,23 @@ class InMemoryHistoryManagerTest {
         List<Task> history = historyManager.getHistory();
         assertTrue(history.isEmpty(), "История должна быть очищена.");
     }
+
+    @Test
+    void addTest() {
+        historyManager.add(task1);
+        Task task = new Task("Task 1", Status.NEW, "New description 1");
+        task.setId(1);
+        historyManager.add(task);
+        List<Task> history = historyManager.getHistory();
+        assertFalse(history.contains(task1), "Task 1 должен быть удален из истории.");
+    }
+
+    @Test
+    void removeTest() {
+        historyManager.add(task1);
+        int id = task1.getId();
+        historyManager.remove(id);
+        List<Task> history = historyManager.getHistory();
+        assertFalse(history.contains(task1), "Task 1 должен быть удален из истории.");
+    }
 }
