@@ -6,8 +6,8 @@ import model.SubTask;
 import model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class InMemoryTaskManagerTest {
 
@@ -29,9 +29,9 @@ class InMemoryTaskManagerTest {
 
     @Test
     void whenCreatingSubTask_thenSubTaskAndEpicAreUpdated() {
-        Epic epic = new Epic("Epic 1", "Epic Description", Status.NEW);
+        Epic epic = new Epic("Epic 1", Status.NEW, "Epic Description");
         Epic createdEpic = taskManager.createEpic(epic);
-        SubTask subTask = new SubTask("SubTask 1", "SubTask Description", Status.NEW, createdEpic.getId());
+        SubTask subTask = new SubTask("SubTask 1", Status.NEW, "SubTask Description", createdEpic.getId());
         SubTask createdSubTask = taskManager.createSubTask(subTask);
 
         assertNotNull(createdSubTask, "Created subtask should not be null");
@@ -61,8 +61,8 @@ class InMemoryTaskManagerTest {
     @Test
     void whenGettingAllTasks_thenCorrectListReturned() {
         taskManager.createTask(new Task("Task 1", Status.NEW, "Task Description"));
-        Epic epic = taskManager.createEpic(new Epic("Epic 1", "Epic Description", Status.NEW));
-        taskManager.createSubTask(new SubTask("SubTask 1", "SubTask Description", Status.NEW, epic.getId()));
+        Epic epic = taskManager.createEpic(new Epic("Epic 1", Status.NEW, "Epic Description"));
+        taskManager.createSubTask(new SubTask("SubTask 1", Status.NEW, "SubTask Description", epic.getId()));
 
         assertFalse(taskManager.getAllTasks().isEmpty(), "List of all tasks should not be empty");
         assertEquals(1, taskManager.getAllTasks().size(), "There should be task (1 task)");
@@ -80,9 +80,9 @@ class InMemoryTaskManagerTest {
 
     @Test
     void whenDeletingSubTask_thenEpicStatusIsUpdated() {
-        Epic epic = taskManager.createEpic(new Epic("Epic 1", "Epic Description", Status.NEW));
-        SubTask subTask1 = taskManager.createSubTask(new SubTask("SubTask 1", "SubTask Description", Status.NEW, epic.getId()));
-        SubTask subTask2 = taskManager.createSubTask(new SubTask("SubTask 2", "SubTask Description", Status.NEW, epic.getId()));
+        Epic epic = taskManager.createEpic(new Epic("Epic 1", Status.NEW, "Epic Description"));
+        SubTask subTask1 = taskManager.createSubTask(new SubTask("SubTask 1", Status.NEW, "SubTask Description", epic.getId()));
+        SubTask subTask2 = taskManager.createSubTask(new SubTask("SubTask 2", Status.NEW, "SubTask Description", epic.getId()));
         assertEquals(Status.NEW, epic.getStatus(), "Epic status should be NEW if all subtasks are NEW or if there's at least one subtask left.");
         taskManager.updateTaskStatus(subTask1.getId(), Status.IN_PROGRESS);
         Epic updatedEpic = taskManager.getEpicById(epic.getId());
