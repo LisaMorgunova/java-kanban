@@ -1,9 +1,10 @@
 package service;
 
 import model.Epic;
+import model.Status;
 import model.SubTask;
 import model.Task;
-import model.Status;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +14,7 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Task> tasks = new HashMap<>();
     private final Map<Integer, Epic> epics = new HashMap<>();
     private final Map<Integer, SubTask> subTasks = new HashMap<>();
-    private final HistoryManager historyManager;
+    protected final HistoryManager historyManager;
     private int currentId = 1;
 
     public InMemoryTaskManager(HistoryManager historyManager) {

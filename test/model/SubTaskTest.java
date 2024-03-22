@@ -1,14 +1,15 @@
 package model;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SubTaskTest {
 
     @Test
     void subTaskCreationAndFieldsTest() {
         int epicId = 100;
-        SubTask subTask = new SubTask("SubTask Test", "SubTask Description", Status.NEW, epicId);
+        SubTask subTask = new SubTask("SubTask Test", Status.NEW, "SubTask Description", epicId);
 
         assertEquals("SubTask Test", subTask.getName(), "Название подзадачи не соответствует ожидаемому.");
         assertEquals("SubTask Description", subTask.getDescription(), "Описание подзадачи не соответствует ожидаемому.");
@@ -19,7 +20,7 @@ class SubTaskTest {
     @Test
     void epicIdAssignmentTest() {
         int initialEpicId = 1;
-        SubTask subTask = new SubTask("SubTask", "Description", Status.NEW, initialEpicId);
+        SubTask subTask = new SubTask("SubTask", Status.NEW, "Description", initialEpicId);
 
         assertEquals(initialEpicId, subTask.getEpicId(), "Начальный ID эпика не соответствует ожидаемому.");
 

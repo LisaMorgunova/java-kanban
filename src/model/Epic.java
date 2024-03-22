@@ -6,7 +6,7 @@ import java.util.List;
 public class Epic extends Task {
     private final List<Integer> subTaskIds = new ArrayList<>();
 
-    public Epic(String name, String description, Status status) { // Исправлен порядок и типы аргументов
+    public Epic(String name, Status status, String description) { // Исправлен порядок и типы аргументов
         super(name, status, description);
     }
 

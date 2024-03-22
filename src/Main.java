@@ -1,7 +1,7 @@
 import model.Epic;
+import model.Status;
 import model.SubTask;
 import model.Task;
-import model.Status;
 import service.Managers;
 import service.TaskManager;
 
@@ -13,11 +13,11 @@ public class Main {
         Task savedTask1 = taskManager.createTask(task1);
         System.out.println("Создана задача: " + savedTask1);
 
-        Epic epic1 = new Epic("Эпик 1", "Описание эпика 1", Status.NEW);
+        Epic epic1 = new Epic("Эпик 1", Status.NEW, "Описание эпика 1");
         Epic savedEpic1 = taskManager.createEpic(epic1);
         System.out.println("Создан эпик: " + savedEpic1);
 
-        SubTask subTask1 = new SubTask("Подзадача 1", "Описание подзадачи 1", Status.NEW, savedEpic1.getId());
+        SubTask subTask1 = new SubTask("Подзадача 1", Status.NEW, "Описание подзадачи 1", savedEpic1.getId());
         SubTask savedSubTask1 = taskManager.createSubTask(subTask1);
         System.out.println("Создана подзадача: " + savedSubTask1);
 

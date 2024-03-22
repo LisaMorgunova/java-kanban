@@ -1,14 +1,16 @@
 package model;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EpicTest {
 
     @Test
     void testEpicEquality() {
-        Epic epic = new Epic("name", "desc", Status.NEW);
-        Epic epicExpected = new Epic("name", "desc", Status.NEW);
+        Epic epic = new Epic("name", Status.NEW, "desc");
+        Epic epicExpected = new Epic("name", Status.NEW, "desc");
 
         epic.setId(1);
         epicExpected.setId(1);
