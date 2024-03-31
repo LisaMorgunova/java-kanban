@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class FileBackedTaskManagerTest {
     File file;
     HistoryManager historyManager;
-    String string1 = "id,type,name,status,description,epic\n" +
+    String string1 = "id,type,name,status,description,epic,\n" +
             "1,TASK,Task1,NEW,Description task1,\n" +
             "2,EPIC,Epic2,DONE,Description epic2,\n" +
             "3,SUBTASK,Sub Task2,DONE,Description sub task3,2";
@@ -28,7 +28,7 @@ class FileBackedTaskManagerTest {
     void tempFile() throws IOException {
         file = File.createTempFile("aaa", "b");
         FileWriter FW = new FileWriter(file);
-        FW.write("id,type,name,status,description,epic\n" +
+        FW.write("id,type,name,status,description,epic,\n" +
                 "1,TASK,Task1,NEW,Description task1,\n" +
                 "2,EPIC,Epic2,DONE,Description epic2,\n" +
                 "3,SUBTASK,Sub Task2,DONE,Description sub task3,2");
@@ -61,7 +61,6 @@ class FileBackedTaskManagerTest {
     void historyToString() {
         String s = FileBackedTaskManager.historyToString(historyManager);
         assertEquals(s, string1);
-
     }
 
     @Test
@@ -84,6 +83,7 @@ class FileBackedTaskManagerTest {
     @Test
     void loadFromFile() {
         FileBackedTaskManager first = new FileBackedTaskManager(historyManager, file);
+        first.createTask(new Task("name", Status.NEW, "description"));
         FileBackedTaskManager second = FileBackedTaskManager.loadFromFile(file);
         assertTrue(historyManager.getHistory().containsAll(second.getHistory()));
     }
