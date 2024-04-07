@@ -18,11 +18,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FileBackedTaskManagerTest {
     File file;
+    String string2 = "id,type,name,status,description,epic,\n" +
+            "1,TASK,Task1,NEW,Description task1,\n" +
+            "2,EPIC,Epic2,DONE,Description epic2,\n" +
+            "3,SUBTASK,Sub Task2,DONE,Description sub task3,2,\n" +
+            "1,2,3";
     HistoryManager historyManager;
     String string1 = "id,type,name,status,description,epic,\n" +
             "1,TASK,Task1,NEW,Description task1,\n" +
             "2,EPIC,Epic2,DONE,Description epic2,\n" +
-            "3,SUBTASK,Sub Task2,DONE,Description sub task3,2";
+            "3,SUBTASK,Sub Task2,DONE,Description sub task3,2,";
 
     @BeforeEach
     void tempFile() throws IOException {
@@ -31,7 +36,8 @@ class FileBackedTaskManagerTest {
         FW.write("id,type,name,status,description,epic,\n" +
                 "1,TASK,Task1,NEW,Description task1,\n" +
                 "2,EPIC,Epic2,DONE,Description epic2,\n" +
-                "3,SUBTASK,Sub Task2,DONE,Description sub task3,2");
+                "3,SUBTASK,Sub Task2,DONE,Description sub task3,2,\n" +
+                "1,2,3");
         historyManager = new InMemoryHistoryManager();
         Task task = new Task("Task1", Status.NEW, "Description task1");
         Epic epic = new Epic("Epic2", Status.DONE, "Description epic2");
@@ -54,7 +60,7 @@ class FileBackedTaskManagerTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        assertEquals(string1, savedContent);
+        assertEquals(string2, savedContent);
     }
 
     @Test
@@ -75,8 +81,8 @@ class FileBackedTaskManagerTest {
     void testToString() {
         Task task = new Task("Task1", Status.NEW, "Description task1");
         task.setId(1);
-        String expected = "1,TASK,Task1,NEW,Description task1";
-        String result = FileBackedTaskManager.toString(task);
+        String expected = "1,TASK,Task1,NEW,Description task1,";
+        String result = FileBackedTaskManager.getTaskAsString(task);
         assertEquals(expected, result);
     }
 

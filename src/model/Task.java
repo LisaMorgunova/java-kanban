@@ -1,7 +1,7 @@
 package model;
 
 public class Task {
-    private int id;
+    private Integer id;
     private String name;
     private Status status;
     private String description;
