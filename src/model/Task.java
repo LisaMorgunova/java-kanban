@@ -1,10 +1,16 @@
 package model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Task {
     private int id;
     private String name;
     private Status status;
     private String description;
+    protected Duration duration;
+    protected LocalDateTime startTime;
+
 
     public Task(String name, Status status, String description) {
         this.name = name;
@@ -58,6 +64,14 @@ public class Task {
         return result;
     }
 
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
     @Override
     public String toString() {
         return "Task{" +
@@ -66,6 +80,10 @@ public class Task {
                 ", status=" + status +
                 ", description='" + description + '\'' +
                 '}';
+    }
+
+    public LocalDateTime getEndTime() {
+        return startTime.plusMinutes(duration.toMinutes());
     }
 }
 

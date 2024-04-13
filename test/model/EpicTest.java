@@ -1,14 +1,15 @@
 package model;
 
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class EpicTest {
 
     @Test
     void testEpicEquality() {
-        Epic epic = new Epic("name", "desc", Status.NEW);
-        Epic epicExpected = new Epic("name", "desc", Status.NEW);
+        Epic epic = new Epic("name", "desc");
+        Epic epicExpected = new Epic("name", "desc");
 
         epic.setId(1);
         epicExpected.setId(1);

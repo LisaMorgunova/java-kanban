@@ -29,7 +29,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void whenCreatingSubTask_thenSubTaskAndEpicAreUpdated() {
-        Epic epic = new Epic("Epic 1", "Epic Description", Status.NEW);
+        Epic epic = new Epic("Epic 1", "Epic Description");
         Epic createdEpic = taskManager.createEpic(epic);
         SubTask subTask = new SubTask("SubTask 1", "SubTask Description", Status.NEW, createdEpic.getId());
         SubTask createdSubTask = taskManager.createSubTask(subTask);
@@ -61,7 +61,7 @@ class InMemoryTaskManagerTest {
     @Test
     void whenGettingAllTasks_thenCorrectListReturned() {
         taskManager.createTask(new Task("Task 1", Status.NEW, "Task Description"));
-        Epic epic = taskManager.createEpic(new Epic("Epic 1", "Epic Description", Status.NEW));
+        Epic epic = taskManager.createEpic(new Epic("Epic 1", "Epic Description"));
         taskManager.createSubTask(new SubTask("SubTask 1", "SubTask Description", Status.NEW, epic.getId()));
 
         assertFalse(taskManager.getAllTasks().isEmpty(), "List of all tasks should not be empty");
@@ -80,7 +80,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void whenDeletingSubTask_thenEpicStatusIsUpdated() {
-        Epic epic = taskManager.createEpic(new Epic("Epic 1", "Epic Description", Status.NEW));
+        Epic epic = taskManager.createEpic(new Epic("Epic 1", "Epic Description"));
         SubTask subTask1 = taskManager.createSubTask(new SubTask("SubTask 1", "SubTask Description", Status.NEW, epic.getId()));
         SubTask subTask2 = taskManager.createSubTask(new SubTask("SubTask 2", "SubTask Description", Status.NEW, epic.getId()));
         assertEquals(Status.NEW, epic.getStatus(), "Epic status should be NEW if all subtasks are NEW or if there's at least one subtask left.");
@@ -95,4 +95,36 @@ class InMemoryTaskManagerTest {
         assertEquals(Status.DONE, updatedEpic.getStatus(), "Epic status should be DONE if all subtasks are DONE.");
     }
 
+    @Test
+    void testEpicStatusAllSubtasksNew() {
+        Epic epic = new Epic("Epic 1", "Epic Description");
+        epic = taskManager.createEpic(epic);
+        taskManager.createSubTask(new SubTask("SubTask 1", "SubTask Description", Status.NEW, epic.getId()));
+        taskManager.createSubTask(new SubTask("SubTask 2", "SubTask Description", Status.NEW, epic.getId()));
+        assertEquals(Status.NEW, taskManager.getEpicById(epic.getId()).getStatus(), "Статус эпика должен быть NEW, если все подзадачи NEW");
+    }
+
+    @Test
+    void testEpicStatusAllSubtasksDone() {
+        Epic epic = new Epic("Epic 1", "Epic Description");
+        epic = taskManager.createEpic(epic);
+        SubTask subTask1 = new SubTask("SubTask 1", "SubTask Description", Status.DONE, epic.getId());
+        SubTask subTask2 = new SubTask("SubTask 2", "SubTask Description", Status.DONE, epic.getId());
+        taskManager.createSubTask(subTask1);
+        taskManager.createSubTask(subTask2);
+        taskManager.updateTaskStatus(subTask1.getId(), Status.DONE);
+        taskManager.updateTaskStatus(subTask2.getId(), Status.DONE);
+        assertEquals(Status.DONE, taskManager.getEpicById(epic.getId()).getStatus(), "Статус эпика должен быть DONE, если все подзадачи DONE");
+    }
+
+    @Test
+    void testEpicStatusSubtasksInProgress() {
+        Epic epic = new Epic("Epic 1", "Epic Description");
+        epic = taskManager.createEpic(epic);
+        SubTask subTask1 = new SubTask("SubTask 1", "SubTask Description", Status.NEW, epic.getId());
+        SubTask subTask2 = new SubTask("SubTask 2", "SubTask Description", Status.IN_PROGRESS, epic.getId());
+        taskManager.createSubTask(subTask1);
+        taskManager.createSubTask(subTask2);
+        assertEquals(Status.IN_PROGRESS, taskManager.getEpicById(epic.getId()).getStatus(), "Статус эпика должен быть IN_PROGRESS, если хотя бы одна подзадача IN_PROGRESS");
+    }
 }

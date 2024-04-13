@@ -1,21 +1,36 @@
 package model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
+
+    private LocalDateTime endTime;
+
     private final List<Integer> subTaskIds = new ArrayList<>();
 
-    public Epic(String name, String description, Status status) { // Исправлен порядок и типы аргументов
+    public Epic(String name, String description) {
         super(name, status, description);
+        startTime = null;
+        duration = null;
+        endTime = null;
     }
 
     public List<Integer> getSubTaskIds() {
         return subTaskIds;
     }
 
-    public void addSubTaskId(int id) {
-        subTaskIds.add(id);
+    public void addSubTaskId(SubTask subTask) {
+        subTaskIds.add(subTask.getId());
+        if (startTime == null || startTime.isAfter(subTask.startTime)) {
+            startTime = subTask.startTime;
+        }
+        if (endTime == null || endTime.isBefore(subTask.getEndTime())) {
+            endTime = subTask.getEndTime();
+        }
+        duration = Duration.between(startTime, endTime);
     }
 
     public void removeSubTaskId(Integer id) {

@@ -4,6 +4,7 @@ import model.Epic;
 import model.SubTask;
 import model.Task;
 import model.Status;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -121,22 +122,16 @@ public class InMemoryTaskManager implements TaskManager {
         if (epic.getSubTaskIds().isEmpty()) {
             epic.setStatus(Status.NEW);
         } else {
-            List<Integer> epicSubTasks  = epic.getSubTaskIds();
-            int doneCount = 0;
-            for (int id : epicSubTasks) {
-                SubTask subTask = subTasks.get(id);
-                Status status = subTask.getStatus();
-                if (status.equals(Status.IN_PROGRESS)) {
-                    epic.setStatus(Status.IN_PROGRESS);
-                    return;
-                } else if (status == Status.DONE) {
-                    doneCount++;
-                }
-            }
-            if (doneCount == epic.getSubTaskIds().size()) {
+            epic.setStatus(Status.NEW);
+            List<Integer> epicSubTasks = epic.getSubTaskIds();
+            Long count = epicSubTasks.stream()
+                    .map(o -> subTasks.get(o).getStatus())
+                    .peek(o -> {
+                        if (o.equals(Status.IN_PROGRESS)) epic.setStatus(Status.IN_PROGRESS);
+                    })
+                    .filter(o -> o.equals(Status.DONE)).count();
+            if (count == epic.getSubTaskIds().size()) {
                 epic.setStatus(Status.DONE);
-            } else {
-                epic.setStatus(Status.NEW);
             }
         }
     }
@@ -165,7 +160,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void deleteEpic(int id) {
         Epic epic = epics.remove(id);
         if (epic != null) {
-            epic.getSubTaskIds().forEach(subTaskId -> {
+            epic.getSubTaskIds().stream().peek(subTaskId -> {
                 subTasks.remove(subTaskId);
                 historyManager.remove(subTaskId);
             });
@@ -201,7 +196,7 @@ public class InMemoryTaskManager implements TaskManager {
         List<SubTask> result = new ArrayList<>();
         Epic epic = epics.get(epicId);
         if (epic != null) {
-            epic.getSubTaskIds().forEach(subTaskId -> result.add(subTasks.get(subTaskId)));
+            epic.getSubTaskIds().stream().peek(subTaskId -> result.add(subTasks.get(subTaskId)));
         }
         return result;
     }

@@ -13,7 +13,7 @@ public class Main {
         Task savedTask1 = taskManager.createTask(task1);
         System.out.println("Создана задача: " + savedTask1);
 
-        Epic epic1 = new Epic("Эпик 1", "Описание эпика 1", Status.NEW);
+        Epic epic1 = new Epic("Эпик 1", "Описание эпика 1");
         Epic savedEpic1 = taskManager.createEpic(epic1);
         System.out.println("Создан эпик: " + savedEpic1);
 

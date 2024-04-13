@@ -71,4 +71,30 @@ class InMemoryHistoryManagerTest {
         List<Task> history = historyManager.getHistory();
         assertTrue(history.isEmpty(), "История должна быть очищена.");
     }
+
+    @Test
+    void testEmptyHistory() {
+        assertTrue(historyManager.getHistory().isEmpty(), "История должна быть пустой после инициализации");
+    }
+
+    @Test
+    void testHistoryDuplication() {
+        historyManager.add(task1);
+        historyManager.add(task1);
+        assertEquals(1, historyManager.getHistory().size(), "История не должна содержать дубликаты");
+    }
+
+    @Test
+    void testRemoveFromHistory() {
+        historyManager.add(task1);
+        historyManager.add(task2);
+        historyManager.remove(task1.getId());
+        assertFalse(historyManager.getHistory().contains(task1), "Задача должна быть удалена из истории");
+    }
+
+    @Test
+    void testFileOperationException() {
+        FileBackedTaskManager fileManager = new FileBackedTaskManager("non_existent_file_path.txt", new InMemoryHistoryManager());
+        assertThrows(IOException.class, () -> fileManager.loadFromFile(), "Должно быть выброшено исключение при попытке загрузки из несуществующего файла");
+    }
 }
