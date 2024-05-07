@@ -9,21 +9,33 @@ public class Epic extends Task {
 
     private LocalDateTime endTime;
 
-    private final List<Integer> subTaskIds = new ArrayList<>();
+    private final List<SubTask> subTasks = new ArrayList<>();
 
     public Epic(String name, String description) {
-        super(name, status, description);
+        super(name, Status.NEW, description);
         startTime = null;
         duration = null;
         endTime = null;
     }
 
-    public List<Integer> getSubTaskIds() {
-        return subTaskIds;
+    public Epic(String name, String status, Status description) {
+        super(name, description, status);
     }
 
-    public void addSubTaskId(SubTask subTask) {
-        subTaskIds.add(subTask.getId());
+    public Epic(String name, Status status, String s) {
+        super(name, status, s);
+    }
+
+    public Epic(int id, String name, Status status, String description, Duration duration, LocalDateTime startTime) {
+        super(id, name, status, description, duration, startTime);
+    }
+
+    public List<SubTask> getSubTasks() {
+        return subTasks;
+    }
+
+    public void addSubTask(SubTask subTask) {
+        subTasks.add(subTask);
         if (startTime == null || startTime.isAfter(subTask.startTime)) {
             startTime = subTask.startTime;
         }
@@ -31,10 +43,12 @@ public class Epic extends Task {
             endTime = subTask.getEndTime();
         }
         duration = Duration.between(startTime, endTime);
+        updateEpicStatus();
     }
 
-    public void removeSubTaskId(Integer id) {
-        subTaskIds.remove(id);
+    public void removeSubTaskId(SubTask subTask) {
+        subTasks.remove(subTask);
+        updateEpicStatus();
     }
 
     @Override
@@ -45,13 +59,42 @@ public class Epic extends Task {
 
         Epic epic = (Epic) o;
 
-        return subTaskIds.equals(epic.subTaskIds);
+        return subTasks.equals(epic.subTasks);
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + subTaskIds.hashCode();
+        result = 31 * result + subTasks.hashCode();
         return result;
+    }
+
+    private void updateEpicStatus() {
+        Long done = subTasks.stream().filter(o -> o.getStatus() == Status.DONE).count();
+        Long new_ = subTasks.stream().filter(o -> o.getStatus() == Status.NEW).count();
+        if (done == subTasks.size()) {
+            this.setStatus(Status.DONE);
+        } else if (new_ == subTasks.size()) {
+            this.setStatus(Status.NEW);
+        } else {
+            this.setStatus(Status.IN_PROGRESS);
+        }
+
+        //       if (epic.getSubTasks().isEmpty()) {
+//            epic.setStatus(Status.NEW);
+//        } else if (subTask.getStatus() == Status.IN_PROGRESS) {
+//            epic.setStatus(Status.IN_PROGRESS);
+//        } else if (subTask.getStatus() == Status.NEW) {
+//            if (epic.getStatus() == Status.IN_PROGRESS) {
+//                return;
+//            }
+//            epic.setStatus(Status.NEW);
+//        } else {
+//            if (epic.getStatus() == Status.IN_PROGRESS || epic.getStatus() == Status.NEW) {
+//                epic.setStatus(Status.IN_PROGRESS);
+//                return;
+//            }
+//            epic.setStatus(Status.DONE);
+//        }
     }
 }

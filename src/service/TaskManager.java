@@ -1,9 +1,10 @@
 package service;
 
 import model.Epic;
+import model.Status;
 import model.SubTask;
 import model.Task;
-import model.Status;
+
 import java.util.List;
 
 public interface TaskManager {
@@ -26,4 +27,5 @@ public interface TaskManager {
     List<SubTask> getAllSubTasks();
     List<SubTask> getSubTasksOfEpic(int epicId);
     List<Task> getHistory();
+
 }

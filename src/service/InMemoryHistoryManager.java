@@ -9,7 +9,9 @@ public class InMemoryHistoryManager implements HistoryManager {
     private final Set<Task> history = new TreeSet(new Comparator<Task>() {
         @Override
         public int compare(Task s1, Task s2) {
-            return s1.getStartTime().isBefore(s2.getStartTime()) ? 1 : -1;
+            int res1 = s1.getStartTime().isBefore(s2.getStartTime()) ? -1 : 1;
+            int res2 = s2.getStartTime().isBefore(s1.getStartTime()) ? 1 : -1;
+            return res1 + res2;
         }
     });
 
@@ -26,20 +28,13 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     private boolean intersection(Task task) {
-        long count = history.stream().filter(o -> {
-            if (o.getStartTime().isBefore(task.getStartTime()) && o.getEndTime().isAfter(task.getEndTime())) {
-                return false;
-            } else if (o.getStartTime().isBefore(task.getStartTime()) && o.getEndTime().isBefore(task.getEndTime())) {
-                return false;
-            } else if (o.getStartTime().isAfter(task.getStartTime()) && o.getEndTime().isAfter(task.getEndTime())) {
-                return false;
-            } else {
+        for (Task existingTask : history) {
+            if (existingTask.getEndTime().isAfter(task.getStartTime()) && existingTask.getStartTime().isBefore(task.getEndTime())) {
                 return true;
             }
-        }).count();
-        return count != history.size();
+        }
+        return false;
     }
-
 
     @Override
     public List<Task> getHistory() {

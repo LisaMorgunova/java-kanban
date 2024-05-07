@@ -6,8 +6,8 @@ import model.SubTask;
 import model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class InMemoryTaskManagerTest {
 
@@ -38,7 +38,7 @@ class InMemoryTaskManagerTest {
         assertEquals(subTask.getName(), createdSubTask.getName(), "SubTask names should match");
 
         Epic updatedEpic = taskManager.getEpicById(createdEpic.getId());
-        assertFalse(updatedEpic.getSubTaskIds().isEmpty(), "Epic should have subtasks");
+        assertFalse(updatedEpic.getSubTasks().isEmpty(), "Epic should have subtasks");
     }
 
     @Test

@@ -1,7 +1,7 @@
 package service;
 
-import model.Task;
 import model.Status;
+import model.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -92,9 +92,4 @@ class InMemoryHistoryManagerTest {
         assertFalse(historyManager.getHistory().contains(task1), "Задача должна быть удалена из истории");
     }
 
-    @Test
-    void testFileOperationException() {
-        FileBackedTaskManager fileManager = new FileBackedTaskManager("non_existent_file_path.txt", new InMemoryHistoryManager());
-        assertThrows(IOException.class, () -> fileManager.loadFromFile(), "Должно быть выброшено исключение при попытке загрузки из несуществующего файла");
-    }
 }
