@@ -21,7 +21,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        if (intersection(task)) {
+        if (intersection(task) || history.size() == 10) {
             return;
         }
         history.add(task);

@@ -13,9 +13,6 @@ public class Epic extends Task {
 
     public Epic(String name, String description) {
         super(name, Status.NEW, description);
-        startTime = null;
-        duration = null;
-        endTime = null;
     }
 
     public Epic(String name, String status, Status description) {
@@ -79,22 +76,5 @@ public class Epic extends Task {
         } else {
             this.setStatus(Status.IN_PROGRESS);
         }
-
-        //       if (epic.getSubTasks().isEmpty()) {
-//            epic.setStatus(Status.NEW);
-//        } else if (subTask.getStatus() == Status.IN_PROGRESS) {
-//            epic.setStatus(Status.IN_PROGRESS);
-//        } else if (subTask.getStatus() == Status.NEW) {
-//            if (epic.getStatus() == Status.IN_PROGRESS) {
-//                return;
-//            }
-//            epic.setStatus(Status.NEW);
-//        } else {
-//            if (epic.getStatus() == Status.IN_PROGRESS || epic.getStatus() == Status.NEW) {
-//                epic.setStatus(Status.IN_PROGRESS);
-//                return;
-//            }
-//            epic.setStatus(Status.DONE);
-//        }
     }
 }
