@@ -142,7 +142,7 @@ public class InMemoryTaskManager implements TaskManager {
             subTask.setStatus(newStatus);
             sortedTasks.add(subTask);
             Epic epic = epics.get(subTask.getEpicId());
-            epic.removeSubTaskId(subTask);
+            epic.removeSubTask(subTask);
             epic.addSubTask(subTask);
             historyManager.add(subTask);
         }

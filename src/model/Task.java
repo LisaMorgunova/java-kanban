@@ -1,17 +1,28 @@
 package model;
 
+import java.util.Date;
+
 public class Task {
     private Integer id;
     private String name;
     private Status status;
     private String description;
+    private Date startTime;
 
     public Task(String name, Status status, String description) {
         this.name = name;
         this.status = status;
         this.description = description;
+        this.startTime = new Date();
     }
 
+    public Task(int id, String name, Status status, String description, Date startTime) {
+        this.id = id;
+        this.name = name;
+        this.status = status;
+        this.description = description;
+        this.startTime = startTime;
+    }
     public int getId() {
         return id;
     }
@@ -35,6 +46,14 @@ public class Task {
     public String getDescription() { return description; }
 
     public void setDescription(String description) { this.description = description; }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
 
     @Override
     public boolean equals(Object o) {
