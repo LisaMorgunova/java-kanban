@@ -8,6 +8,7 @@ public class Task {
     private Status status;
     private String description;
     private Date startTime;
+    private Date endTime;
 
     public Task(String name, Status status, String description) {
         this.name = name;
@@ -22,6 +23,7 @@ public class Task {
         this.status = status;
         this.description = description;
         this.startTime = startTime;
+        this.endTime = endTime;
     }
     public int getId() {
         return id;
@@ -55,6 +57,14 @@ public class Task {
         this.startTime = startTime;
     }
 
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -65,7 +75,9 @@ public class Task {
         if (id != task.id) return false;
         if (!name.equals(task.name)) return false;
         if (status != task.status) return false;
-        return description.equals(task.description);
+        if (!description.equals(task.description)) return false;
+        if (!startTime.equals(task.startTime)) return false;
+        return endTime != null ? endTime.equals(task.endTime) : task.endTime == null;
     }
 
     @Override
@@ -74,6 +86,8 @@ public class Task {
         result = 31 * result + name.hashCode();
         result = 31 * result + status.hashCode();
         result = 31 * result + description.hashCode();
+        result = 31 * result + startTime.hashCode();
+        result = 31 * result + (endTime != null ? endTime.hashCode() : 0);
         return result;
     }
 
@@ -84,6 +98,8 @@ public class Task {
                 ", name='" + name + '\'' +
                 ", status=" + status +
                 ", description='" + description + '\'' +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
                 '}';
     }
 }

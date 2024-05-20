@@ -37,9 +37,6 @@ public class InMemoryHistoryManager implements HistoryManager {
             }
         }
 
-    public List<Task> getPrioritizedTasks() {
-        return history.stream().collect(Collectors.toList());
-    }
     @Override
     public void add(Task task) {
         if (history.size() >= 10) {

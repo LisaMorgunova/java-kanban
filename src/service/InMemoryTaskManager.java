@@ -36,6 +36,10 @@ public class InMemoryTaskManager implements TaskManager {
         return currentId++;
     }
 
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(sortedTasks);
+    }
+
     @Override
     public Task createTask(Task task) {
         int id = generateId();
@@ -100,32 +104,56 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateTask(Task task) {
         if (tasks.containsKey(task.getId())) {
-            sortedTasks.remove(task);
-            tasks.put(task.getId(), task);
-            sortedTasks.add(task);
-            historyManager.add(task);
+            if (!hasTimeOverlap(task)) {
+                sortedTasks.remove(task);
+                tasks.put(task.getId(), task);
+                sortedTasks.add(task);
+                historyManager.add(task);
+            } else {
+                System.out.println("Ошибка: Обновление невозможно из-за пересечения по времени с другой задачей.");
+            }
         }
     }
 
     @Override
     public void updateSubTask(SubTask subTask) {
         if (subTasks.containsKey(subTask.getId())) {
-            sortedTasks.remove(subTask);
-            subTasks.put(subTask.getId(), subTask);
-            sortedTasks.add(subTask);
-            epics.get(subTask.getEpicId()).addSubTask(subTask);
-            historyManager.add(subTask);
+            if (!hasTimeOverlap(subTask)) {
+                sortedTasks.remove(subTask);
+                subTasks.put(subTask.getId(), subTask);
+                sortedTasks.add(subTask);
+                epics.get(subTask.getEpicId()).addSubTask(subTask);
+                historyManager.add(subTask);
+            } else {
+                System.out.println("Ошибка: Обновление невозможно из-за пересечения по времени с другой задачей.");
+            }
         }
     }
 
     @Override
     public void updateEpic(Epic epic) {
         if (epics.containsKey(epic.getId())) {
-            sortedTasks.remove(epic);
-            epics.put(epic.getId(), epic);
-            sortedTasks.add(epic);
-            historyManager.add(epic);
+            if (!hasTimeOverlap(epic)) {
+                sortedTasks.remove(epic);
+                epics.put(epic.getId(), epic);
+                sortedTasks.add(epic);
+                historyManager.add(epic);
+            } else {
+                System.out.println("Ошибка: Обновление невозможно из-за пересечения по времени с другой задачей.");
+            }
         }
+    }
+
+    private boolean hasTimeOverlap(Task task) {
+        for (Task t : sortedTasks) {
+            if (!t.equals(task) &&
+                    ((t.getStartTime().before(task.getStartTime()) && t.getEndTime().after(task.getStartTime())) ||
+                            (t.getStartTime().before(task.getEndTime()) && t.getEndTime().after(task.getEndTime())) ||
+                            (t.getStartTime().equals(task.getStartTime())) || t.getEndTime().equals(task.getEndTime()))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
