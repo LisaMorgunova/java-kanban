@@ -2,38 +2,47 @@ package service;
 
 import model.Task;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Iterator;
 import java.util.stream.Collectors;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private final Set<Task> history = new TreeSet(new Comparator<Task>() {
-        @Override
-        public int compare(Task s1, Task s2) {
-            int res1 = s1.getStartTime().isBefore(s2.getStartTime()) ? -1 : 1;
-            int res2 = s2.getStartTime().isBefore(s1.getStartTime()) ? 1 : -1;
-            return res1 + res2;
-        }
-    });
+    private final List<Task> history = new ArrayList<>();
 
-    public List<Task> getPrioritizedTasks () {
-        return history.stream().collect(Collectors.toList());
+    private Node first;
+    private Node last;
+
+    private static class Node {
+        Task item;
+        Node next;
+        Node prev;
+
+        Node(Node prev, Task element, Node next) {
+            this.item = element;
+            this.next = next;
+            this.prev = prev;
+        }
+    }
+
+    private void linkLast(Task task) {
+        final Node l = last;
+        final Node newNode = new Node(l, task, null);
+        last = newNode;
+        if (l == null) {
+            first = newNode;
+        } else {
+            l.next = newNode;
+        }
     }
 
     @Override
     public void add(Task task) {
-        if (intersection(task) || history.size() == 10) {
-            return;
+        if (history.size() >= 10) {
+            history.remove(0);
         }
         history.add(task);
-    }
-
-    private boolean intersection(Task task) {
-        for (Task existingTask : history) {
-            if (existingTask.getEndTime().isAfter(task.getStartTime()) && existingTask.getStartTime().isBefore(task.getEndTime())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
@@ -56,5 +65,8 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void clear() {
         history.clear();
+        last = null;
+        first = null;
     }
 }
+

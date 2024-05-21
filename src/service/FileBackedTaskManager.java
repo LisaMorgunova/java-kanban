@@ -135,14 +135,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             Task t = null;
             switch (substring[i + 1]) {
                 case "TASK":
-                    t = new Task(Integer.parseInt(substring[i]), substring[i + 2], Status.check(substring[i + 3]).get(), substring[i + 4], Duration.ofMinutes(Long.parseLong(substring[i + 6])), LocalDateTime.parse(substring[i + 5]));
+                    t = new Task(substring[i + 2], Status.check(substring[i + 3]).get(), substring[i + 4]);
                     break;
                 case "SUBTASK":
-                    t = new SubTask(Integer.parseInt(substring[i]), substring[i + 2], Status.check(substring[i + 3]).get(), substring[i + 4], Duration.ofMinutes(Long.parseLong(substring[i + 6])), LocalDateTime.parse(substring[i + 5]), Integer.parseInt(substring[i + 7]));
+                    t = new SubTask(substring[i + 2], Status.check(substring[i + 3]).get(), substring[i + 4], Integer.parseInt(substring[i + 7]));
                     i++;
                     break;
                 case "EPIC":
-                    t = new Epic(Integer.parseInt(substring[i]), substring[i + 2], Status.check(substring[i + 3]).get(), substring[i + 4], Duration.ofMinutes(Long.parseLong(substring[i + 6])), LocalDateTime.parse(substring[i + 5]));
+                    t = new Epic(substring[i + 2], Status.check(substring[i + 3]).get(), substring[i + 4]);
                     break;
             }
             if (t != null) {
@@ -161,8 +161,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             return title;
         }
 
-        Tasks(String subtask) {
-            title = subtask;
+        Tasks(String title) {
+            this.title = title;
         }
     }
 
@@ -191,8 +191,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         builder.append(",");
         builder.append(task.getStartTime());
         builder.append(",");
-        builder.append(task.getDuration().toMinutes());
-        if (type == Tasks.SUBTASK) {
+        Duration duration = null;
+        if (task.getEndTime() != null) {
+            duration = Duration.between(task.getStartTime().toInstant(), task.getEndTime().toInstant());
+        }
+        builder.append(duration != null ? duration.toMinutes() : "");        if (type == Tasks.SUBTASK) {
             builder.append(",");
             builder.append(epicId);
         }
