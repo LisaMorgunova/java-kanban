@@ -1,3 +1,8 @@
+package server;
+
+import com.google.gson.Gson;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
 import model.Epic;
 import model.Status;
 import model.SubTask;
@@ -5,8 +10,33 @@ import model.Task;
 import service.Managers;
 import service.TaskManager;
 
-public class Main {
+import java.io.IOException;
+import java.net.InetSocketAddress;
+
+public class HttpTaskServer {
+
+    private static final int PORT = 8080;
+    public static final Gson gson = new Gson();
+    private static final TaskManager taskManager = Managers.getInMemoryTaskManager();
+
+    public HttpTaskServer(TaskManager manager) {
+    }
+
     public static void main(String[] args) {
+        try {
+            HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
+            server.createContext("/tasks", (HttpHandler) new TaskHandler(taskManager));
+            server.createContext("/subtasks", (HttpHandler) new SubTaskHandler(taskManager));
+            server.createContext("/epics", (HttpHandler) new EpicHandler(taskManager));
+            server.createContext("/history", (HttpHandler) new HistoryHandler(taskManager));
+            server.createContext("/prioritized", (HttpHandler) new PrioritizedHandler(taskManager));
+            server.setExecutor(null);
+            server.start();
+            System.out.println("Server started on port: " + PORT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         TaskManager taskManager = Managers.getDefaultTaskManager();
 
         Task task1 = new Task("Задача 1", Status.NEW, "Описание задачи 1");
@@ -35,5 +65,11 @@ public class Main {
         taskManager.deleteSubTask(savedSubTask1.getId());
         System.out.println("История просмотров после удаления задач:");
         taskManager.getHistory().forEach(System.out::println);
+    }
+
+    public void start() {
+    }
+
+    public void stop() {
     }
 }

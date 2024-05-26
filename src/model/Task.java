@@ -17,7 +17,7 @@ public class Task {
         this.startTime = new Date();
     }
 
-    public Task(int id, String name, Status status, String description, Date startTime) {
+    public Task() {
         this.id = id;
         this.name = name;
         this.status = status;
@@ -25,6 +25,10 @@ public class Task {
         this.startTime = startTime;
         this.endTime = endTime;
     }
+
+    public Task(String s, String string) {
+    }
+
     public int getId() {
         return id;
     }
