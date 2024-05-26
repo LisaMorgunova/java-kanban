@@ -1,10 +1,11 @@
 package server;
 
 import model.Task;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import service.HistoryManager;
+import service.InMemoryHistoryManager;
 import service.InMemoryTaskManager;
 import service.TaskManager;
 
@@ -13,21 +14,25 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class HttpTaskManagerPrioritizedTasksTest {
 
     private HistoryManager historyManager;
-    // Создаем экземпляр InMemoryTaskManager
-    TaskManager manager = new InMemoryTaskManager(historyManager);
-    // Передаем его в качестве аргумента в конструктор HttpTaskServer
-    HttpTaskServer taskServer = new HttpTaskServer(manager);
+    private TaskManager manager;
+    private HttpTaskServer taskServer;
+    // TaskManager manager = new InMemoryTaskManager(historyManager);
+    //HttpTaskServer taskServer = new HttpTaskServer(manager);
 
     @BeforeEach
     public void setUp() {
-        manager.deleteAllTasks(); // Очищаем задачи перед каждым тестом
-        taskServer.start(); // Запускаем HTTP-сервер перед каждым тестом
+        historyManager = new InMemoryHistoryManager();
+        manager = new InMemoryTaskManager(historyManager);
+        manager.deleteAllTasks();
+        taskServer = new HttpTaskServer(manager);
+        taskServer.start();
     }
 
     @AfterEach
