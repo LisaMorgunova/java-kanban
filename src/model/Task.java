@@ -18,15 +18,10 @@ public class Task {
     }
 
     public Task() {
-        this.id = id;
-        this.name = name;
-        this.status = status;
-        this.description = description;
-        this.startTime = startTime;
-        this.endTime = endTime;
     }
 
-    public Task(String s, String string) {
+    public Task(String name, String description) {
+        this(name, Status.NEW, description);
     }
 
     public int getId() {

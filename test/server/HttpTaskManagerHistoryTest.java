@@ -34,16 +34,32 @@ public class HttpTaskManagerHistoryTest {
 
     @AfterEach
     public void shutDown() {
-        taskServer.stop(); // Останавливаем HTTP-сервер после каждого теста
+        taskServer.stop();
+    }
+
+    @Test
+    public void testCreateTask() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/task/create");
+        String requestBody = "{\"name\": \"Task 1\", \"description\": \"Description 1\"}";
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(url)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(200, response.statusCode());
+
+        assertNotNull(response.body());
     }
 
     @Test
     public void testGetHistory() throws IOException, InterruptedException {
-        // Создаем несколько задач для проверки истории
         manager.createTask(new Task("Task 1", "Description 1"));
         manager.createTask(new Task("Task 2", "Description 2"));
 
-        // Отправляем GET-запрос для получения истории
         HttpClient client = HttpClient.newHttpClient();
         URI url = URI.create("http://localhost:8080/history");
         HttpRequest request = HttpRequest.newBuilder()
@@ -51,13 +67,10 @@ public class HttpTaskManagerHistoryTest {
                 .GET()
                 .build();
 
-        // Получаем ответ от сервера
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        // Проверяем статус код ответа
         assertEquals(200, response.statusCode());
 
-        // Проверяем, что ответ содержит историю
         assertNotNull(response.body());
     }
 }

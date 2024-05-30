@@ -11,7 +11,8 @@ public class Epic extends Task {
         super(name, status, description);
     }
 
-    public Epic(String name, String s) {
+    public Epic(String name, String description) {
+        this(name, Status.NEW, description);
     }
 
     public List<SubTask> getSubTasks() {

@@ -1,6 +1,7 @@
 package server;
 
 import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
 import service.TaskManager;
 import model.Task;
 import java.io.IOException;
@@ -51,7 +52,7 @@ public class TaskHandler extends BaseHttpHandler {
 
     private void handleGetTasks(HttpExchange exchange) throws IOException {
         List<Task> tasks = taskManager.getAllTasks();
-        String response = tasks.toString(); // Ваша логика формирования ответа
+        String response = tasks.toString();
         sendResponse(exchange, 200, response);
     }
 
@@ -59,18 +60,16 @@ public class TaskHandler extends BaseHttpHandler {
         int id = Integer.parseInt(exchange.getRequestURI().getPath().split("/")[2]);
         Task task = taskManager.getTaskById(id);
         if (task != null) {
-            sendResponse(exchange, 200, task.toString()); // Ваша логика формирования ответа
+            sendResponse(exchange, 200, task.toString());
         } else {
             sendResponse(exchange, 404, "Not Found");
         }
     }
 
     private void handleCreateOrUpdateTask(HttpExchange exchange) throws IOException {
-        // Логика обработки создания или обновления задачи
-        // Пример:
-        Task task = new Task("Task 1", "Description 1"); // Создание задачи из данных запроса
+        Task task = new Task("Task 1", "Description 1");
         Task createdTask = taskManager.createTask(task);
-        sendResponse(exchange, 201, createdTask.toString()); // Ваша логика формирования ответа
+        sendResponse(exchange, 201, createdTask.toString());
     }
 
     private void handleDeleteTask(HttpExchange exchange) throws IOException {

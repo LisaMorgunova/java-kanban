@@ -23,8 +23,6 @@ public class HttpTaskManagerPrioritizedTasksTest {
     private HistoryManager historyManager;
     private TaskManager manager;
     private HttpTaskServer taskServer;
-    // TaskManager manager = new InMemoryTaskManager(historyManager);
-    //HttpTaskServer taskServer = new HttpTaskServer(manager);
 
     @BeforeEach
     public void setUp() {
@@ -37,17 +35,15 @@ public class HttpTaskManagerPrioritizedTasksTest {
 
     @AfterEach
     public void shutDown() {
-        taskServer.stop(); // Останавливаем HTTP-сервер после каждого теста
+        taskServer.stop();
     }
 
     @Test
     public void testGetPrioritizedTasks() throws IOException, InterruptedException {
-        // Создаем несколько задач для проверки приоритета
         manager.createTask(new Task("Task 1", "Description 1"));
         manager.createTask(new Task("Task 2", "Description 2"));
         manager.createTask(new Task("Task 3", "Description 3"));
 
-        // Отправляем GET-запрос для получения списка задач в порядке приоритета
         HttpClient client = HttpClient.newHttpClient();
         URI url = URI.create("http://localhost:8080/prioritized");
         HttpRequest request = HttpRequest.newBuilder()
@@ -55,13 +51,10 @@ public class HttpTaskManagerPrioritizedTasksTest {
                 .GET()
                 .build();
 
-        // Получаем ответ от сервера
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        // Проверяем статус код ответа
         assertEquals(200, response.statusCode());
 
-        // Проверяем, что ответ содержит список задач
         assertNotNull(response.body());
     }
 }

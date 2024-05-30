@@ -22,8 +22,7 @@ public class HttpTaskManagerTasksTest {
     private HistoryManager historyManager;
     private TaskManager manager;
     private HttpTaskServer taskServer;
-    // TaskManager manager = new InMemoryTaskManager(historyManager);
-    //HttpTaskServer taskServer = new HttpTaskServer(manager);
+
 
     @BeforeEach
     public void setUp() {
@@ -37,15 +36,13 @@ public class HttpTaskManagerTasksTest {
 
     @AfterEach
     public void shutDown() {
-        taskServer.stop(); // Останавливаем HTTP-сервер после каждого теста
+        taskServer.stop();
     }
 
     @Test
     public void testAddTask() throws IOException, InterruptedException {
-        // Создаем JSON-строку для новой задачи
         String taskJson = "{\"name\":\"Test Task\",\"description\":\"Test Description\"}";
 
-        // Создаем HTTP-клиент и отправляем POST-запрос для создания новой задачи
         HttpClient client = HttpClient.newHttpClient();
         URI url = URI.create("http://localhost:8080/tasks");
         HttpRequest request = HttpRequest.newBuilder()
@@ -54,17 +51,13 @@ public class HttpTaskManagerTasksTest {
                 .POST(HttpRequest.BodyPublishers.ofString(taskJson))
                 .build();
 
-        // Получаем ответ от сервера
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            // Проверяем статус код ответа
             assertEquals(200, response.statusCode());
 
-            // Проверяем, что задача была успешно добавлена
             assertNotNull(manager.getTaskById(1));
         } catch (InterruptedException e) {
-            // Обработка исключения
             e.printStackTrace();
         }
     }
