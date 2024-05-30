@@ -7,8 +7,7 @@ import model.Epic;
 import model.Status;
 import model.SubTask;
 import model.Task;
-import service.Managers;
-import service.TaskManager;
+import service.*;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -17,25 +16,35 @@ public class HttpTaskServer {
 
     private static final int PORT = 8080;
     public static final Gson gson = new Gson();
-    private static final TaskManager taskManager = Managers.getInMemoryTaskManager();
+    private TaskManager taskManager;
+    private static HttpServer server = null;
+
 
     public HttpTaskServer(TaskManager manager) {
+        this.taskManager = manager;
     }
 
     public static void main(String[] args) {
+        TaskManager manager = Managers.getInMemoryTaskManager();
+        HttpTaskServer httpTaskServer = new HttpTaskServer(manager);
+        httpTaskServer.start();
+    }
+
+    public void start() {
         try {
-            HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
-            server.createContext("/tasks", (HttpHandler) new TaskHandler(taskManager));
-            server.createContext("/subtasks", (HttpHandler) new SubTaskHandler(taskManager));
-            server.createContext("/epics", (HttpHandler) new EpicHandler(taskManager));
-            server.createContext("/history", (HttpHandler) new HistoryHandler(taskManager));
-            server.createContext("/prioritized", (HttpHandler) new PrioritizedHandler(taskManager));
-            server.setExecutor(null);
-            server.start();
-            System.out.println("Server started on port: " + PORT);
+            HttpTaskServer.server = HttpServer.create(new InetSocketAddress(PORT), 0);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        assert server != null;
+        server.createContext("/tasks", (HttpHandler) new TaskHandler(taskManager));
+        server.createContext("/subtasks", (HttpHandler) new SubTaskHandler(taskManager));
+        server.createContext("/epics", (HttpHandler) new EpicHandler(taskManager));
+        server.createContext("/history", (HttpHandler) new HistoryHandler(Managers.getDefaultHistoryManager()));
+        server.createContext("/prioritized", (HttpHandler) new PrioritizedHandler(taskManager));
+        server.setExecutor(null);
+        server.start();
+        System.out.println("Server started on port: " + PORT);
 
         TaskManager taskManager = Managers.getDefaultTaskManager();
 
@@ -67,9 +76,8 @@ public class HttpTaskServer {
         taskManager.getHistory().forEach(System.out::println);
     }
 
-    public void start() {
-    }
-
     public void stop() {
+        HttpTaskServer.server.stop(0);
+        System.out.println("Server stopped");
     }
 }

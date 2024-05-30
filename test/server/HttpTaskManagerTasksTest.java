@@ -54,7 +54,7 @@ public class HttpTaskManagerTasksTest {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            assertEquals(200, response.statusCode());
+            assertEquals(201, response.statusCode());
 
             assertNotNull(manager.getTaskById(1));
         } catch (InterruptedException e) {

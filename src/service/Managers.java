@@ -10,6 +10,7 @@ public class Managers {
     }
 
     public static TaskManager getInMemoryTaskManager() {
-        // TODO вставить правильный таск менеджер;
+        HistoryManager historyManager = getDefaultHistoryManager();
+        return new InMemoryTaskManager(historyManager);
     }
 }

@@ -95,7 +95,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public void save() {
         try (var writer = new BufferedWriter(new FileWriter(save))) {
-            writer.write(getHeaders());  // заголовок "id,type,name,status,description,epic"
+            writer.write(getHeaders());
             writer.newLine();
 
             for (var task : tasks.values()) {
@@ -114,7 +114,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             writer.write(
                     String.valueOf(getHistory().stream().map(t -> String.valueOf(t.getId())).collect(Collectors.joining(",")))); // последней строкой сохраняется список id тасок, которые были в истории вызовов;
         } catch (IOException e) {
-            throw new RuntimeException(); // можно заменить на свое исключение с сообщением
+            throw new RuntimeException();
         }
     }
 
