@@ -52,16 +52,8 @@ public class Task {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
-    }
-
     public Date getEndTime() {
         return endTime;
-    }
-
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
     }
 
     @Override
@@ -75,8 +67,7 @@ public class Task {
         if (!name.equals(task.name)) return false;
         if (status != task.status) return false;
         if (!description.equals(task.description)) return false;
-        if (!startTime.equals(task.startTime)) return false;
-        return endTime != null ? endTime.equals(task.endTime) : task.endTime == null;
+        return true;
     }
 
     @Override
@@ -92,7 +83,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
+        String task = "Task{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", status=" + status +
@@ -100,6 +91,7 @@ public class Task {
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
                 '}';
+        return task.replaceAll("\r\n", "\n");
     }
 }
 

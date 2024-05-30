@@ -2,6 +2,8 @@ package model;
 
 import org.junit.jupiter.api.Test;
 
+import org.junit.jupiter.api.Assertions;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SubTaskTest {
@@ -11,10 +13,10 @@ class SubTaskTest {
         int epicId = 100;
         SubTask subTask = new SubTask("SubTask Test", Status.NEW, "SubTask Description", epicId);
 
-        assertEquals("SubTask Test", subTask.getName(), "Название подзадачи не соответствует ожидаемому.");
-        assertEquals("SubTask Description", subTask.getDescription(), "Описание подзадачи не соответствует ожидаемому.");
-        assertEquals(Status.NEW, subTask.getStatus(), "Статус подзадачи не соответствует ожидаемому.");
-        assertEquals(epicId, subTask.getEpicId(), "ID эпика не соответствует ожидаемому.");
+        Assertions.assertEquals("SubTask Test", subTask.getName(), "Название подзадачи не соответствует ожидаемому.");
+        Assertions.assertEquals("SubTask Description", subTask.getDescription(), "Описание подзадачи не соответствует ожидаемому.");
+        Assertions.assertEquals(Status.NEW, subTask.getStatus(), "Статус подзадачи не соответствует ожидаемому.");
+        Assertions.assertEquals(epicId, subTask.getEpicId(), "ID эпика не соответствует ожидаемому.");
     }
 
     @Test

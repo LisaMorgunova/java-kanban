@@ -40,7 +40,7 @@ public class HttpTaskManagerHistoryTest {
     @Test
     public void testCreateTask() throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
-        URI url = URI.create("http://localhost:8080/task/create");
+        URI url = URI.create("http://localhost:8080/tasks");
         String requestBody = "{\"name\": \"Task 1\", \"description\": \"Description 1\"}";
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
@@ -50,7 +50,7 @@ public class HttpTaskManagerHistoryTest {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        assertEquals(200, response.statusCode());
+        assertEquals(201, response.statusCode());
 
         assertNotNull(response.body());
     }
