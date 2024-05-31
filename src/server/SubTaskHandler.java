@@ -3,7 +3,9 @@ package server;
 import com.sun.net.httpserver.HttpExchange;
 import model.SubTask;
 import service.TaskManager;
+
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static server.HttpTaskServer.gson;
@@ -26,8 +28,7 @@ public class SubTaskHandler extends BaseHttpHandler {
                     // Получаем подзадачи
                     List<SubTask> subTasks = taskManager.getAllSubTasks();
                     String jsonResponse = gson.toJson(subTasks);
-                    sendText(exchange,
-                            200, jsonResponse);
+                    sendText(exchange, 200, jsonResponse);
                 } else if (pathParts.length == 3) {
                     // Получаем подзадачу по id
                     int id = Integer.parseInt(pathParts[2]);
@@ -84,6 +85,10 @@ public class SubTaskHandler extends BaseHttpHandler {
     }
 
     private String getRequestBody(HttpExchange exchange) {
-        return null;
+        try {
+            return new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8).replaceAll("\r\n", "\n");
+        } catch (IOException e) {
+            return "";
+        }
     }
 }

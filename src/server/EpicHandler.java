@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
 public class EpicHandler extends BaseHttpHandler {
 
     private final TaskManager taskManager;
-    private final Gson gson = new Gson();
     private final Pattern idPattern = Pattern.compile("/epics/(\\d+)");
     private final Pattern subtaskPattern = Pattern.compile("/epics/(\\d+)/subtasks");
 
@@ -80,14 +79,14 @@ public class EpicHandler extends BaseHttpHandler {
 
     private void sendEpics(HttpExchange exchange) throws IOException {
         List<Epic> epics = taskManager.getAllEpics();
-        String response = convertEpicsToJson(epics);
+        String response = convertToJson(epics);
         sendResponse(exchange, 200, response);
     }
 
     private void sendEpicById(HttpExchange exchange, int id) throws IOException {
         Epic epic = taskManager.getEpicById(id);
         if (epic != null) {
-            String response = convertEpicToJson(epic);
+            String response = convertToJson(epic);
             sendResponse(exchange, 200, response);
         } else {
             sendNotFound(exchange);
@@ -97,7 +96,7 @@ public class EpicHandler extends BaseHttpHandler {
     private void sendEpicSubtasks(HttpExchange exchange, int epicId) throws IOException {
         List<SubTask> subtasks = taskManager.getSubTasksOfEpic(epicId);
         if (!subtasks.isEmpty()) {
-            String response = convertSubTasksToJson(subtasks);
+            String response = convertToJson(subtasks);
             sendResponse(exchange, 200, response);
         } else {
             sendNotFound(exchange);
@@ -116,9 +115,9 @@ public class EpicHandler extends BaseHttpHandler {
             br.close();
             isr.close();
 
-            Epic epic = gson.fromJson(requestBody.toString(), Epic.class);
+            Epic epic = HttpTaskServer.gson.fromJson(requestBody.toString(), Epic.class);
             Epic createdEpic = taskManager.createEpic(epic);
-            String response = convertEpicToJson(createdEpic);
+            String response = convertToJson(createdEpic);
             sendResponse(exchange, 201, response);
         } catch (Exception e) {
             sendHasInteractions(exchange);
@@ -135,16 +134,8 @@ public class EpicHandler extends BaseHttpHandler {
         }
     }
 
-    private String convertEpicsToJson(List<Epic> epics) {
-        return gson.toJson(epics);
-    }
-
-    private String convertEpicToJson(Epic epic) {
-        return gson.toJson(epic);
-    }
-
-    private String convertSubTasksToJson(List<SubTask> subtasks) {
-        return gson.toJson(subtasks);
+    private String convertToJson(Object o) {
+        return HttpTaskServer.gson.toJson(o);
     }
 }
 

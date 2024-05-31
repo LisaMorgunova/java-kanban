@@ -1,5 +1,6 @@
 package server;
 
+import com.google.gson.JsonObject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
@@ -41,7 +42,10 @@ public class HttpTaskManagerTasksTest {
 
     @Test
     public void testAddTask() throws IOException, InterruptedException {
-        String taskJson = "{\"name\":\"Test Task\",\"description\":\"Test Description\"}";
+        JsonObject innerObject = new JsonObject();
+        innerObject.addProperty("name", "Test Task");
+        innerObject.addProperty("description", "Test Description");
+        String taskJson = innerObject.toString();
 
         HttpClient client = HttpClient.newHttpClient();
         URI url = URI.create("http://localhost:8080/tasks");

@@ -31,8 +31,7 @@ public class PrioritizedHandler extends BaseHttpHandler {
     }
 
     private String convertTasksToJson(List<Task> tasks) {
-        Gson gson = new Gson();
-        return gson.toJson(tasks);
+        return HttpTaskServer.gson.toJson(tasks);
     }
 }
 

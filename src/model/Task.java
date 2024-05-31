@@ -24,7 +24,7 @@ public class Task {
         this(name, Status.NEW, description);
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

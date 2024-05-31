@@ -1,11 +1,14 @@
 package server;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import service.TaskManager;
 import model.Task;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class TaskHandler extends BaseHttpHandler {
@@ -67,9 +70,19 @@ public class TaskHandler extends BaseHttpHandler {
     }
 
     private void handleCreateOrUpdateTask(HttpExchange exchange) throws IOException {
-        Task task = new Task("Task 1", "Description 1");
-        Task createdTask = taskManager.createTask(task);
-        sendResponse(exchange, 201, createdTask.toString());
+        Task task = HttpTaskServer.gson.fromJson(TaskHandler.getBodyFromHttpExchange(exchange), Task.class);
+        Task existingTask = null;
+        if (task.getId() != null) {
+            existingTask = taskManager.getTaskById(task.getId());
+        }
+        if (existingTask == null) {
+            task = taskManager.createTask(task);
+        } else {
+            taskManager.updateTask(task);
+            task = existingTask;
+        }
+
+        sendResponse(exchange, 201, HttpTaskServer.gson.toJson(task));
     }
 
     private void handleDeleteTask(HttpExchange exchange) throws IOException {
@@ -79,9 +92,18 @@ public class TaskHandler extends BaseHttpHandler {
     }
 
     public void sendResponse(HttpExchange exchange, int statusCode, String response) throws IOException {
+        exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
         exchange.sendResponseHeaders(statusCode, response.getBytes().length);
         OutputStream os = exchange.getResponseBody();
         os.write(response.getBytes());
         os.close();
+    }
+
+    private static String getBodyFromHttpExchange(HttpExchange h) {
+        try {
+            return new String(h.getRequestBody().readAllBytes(), StandardCharsets.UTF_8).replaceAll("\r\n", "\n");
+        } catch (IOException e) {
+            return "";
+        }
     }
 }

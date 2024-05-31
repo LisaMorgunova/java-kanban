@@ -37,4 +37,18 @@ public class SubTask extends Task {
         result = 31 * result + epicId;
         return result;
     }
+
+    @Override
+    public String toString() {
+        String task = "SubTask{" +
+                "id=" + this.getId() +
+                ", name='" + this.getName() + '\'' +
+                ", status=" + this.getStatus() +
+                ", description='" + this.getDescription() + '\'' +
+                ", startTime=" + this.getStartTime() +
+                ", endTime=" + this.getEndTime() +
+                ", epicId=" + this.epicId +
+                '}';
+        return task.replaceAll("\r\n", "\n");
+    }
 }

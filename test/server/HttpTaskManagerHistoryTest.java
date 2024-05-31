@@ -1,9 +1,10 @@
 package server;
 
+import com.google.gson.JsonObject;
 import model.Task;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import service.HistoryManager;
 import service.InMemoryHistoryManager;
 import service.InMemoryTaskManager;
@@ -14,6 +15,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -41,7 +43,10 @@ public class HttpTaskManagerHistoryTest {
     public void testCreateTask() throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         URI url = URI.create("http://localhost:8080/tasks");
-        String requestBody = "{\"name\": \"Task 1\", \"description\": \"Description 1\"}";
+        JsonObject innerObject = new JsonObject();
+        innerObject.addProperty("name", "Task 1");
+        innerObject.addProperty("description", "Description 1");
+        String requestBody = innerObject.toString();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(url)
                 .header("Content-Type", "application/json")
