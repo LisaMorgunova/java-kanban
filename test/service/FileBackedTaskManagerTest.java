@@ -57,6 +57,7 @@ class FileBackedTaskManagerTest {
         String savedContent = "";
         try {
             savedContent = Files.readString(file.toPath());
+            savedContent = savedContent.replaceAll("\r\n", "\n");
         } catch (IOException e) {
             e.printStackTrace();
         }

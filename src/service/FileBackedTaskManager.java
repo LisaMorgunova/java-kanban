@@ -7,6 +7,7 @@ import model.SubTask;
 import model.Task;
 
 import java.io.*;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File save;
     private static String chain;
+
     public FileBackedTaskManager(HistoryManager historyManager, File save) {
         super(historyManager);
         this.save = save;
@@ -95,7 +97,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public void save() {
         try (var writer = new BufferedWriter(new FileWriter(save))) {
-            writer.write(getHeaders());  // заголовок "id,type,name,status,description,epic"
+            writer.write(getHeaders());
             writer.newLine();
 
             for (var task : tasks.values()) {
@@ -114,7 +116,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             writer.write(
                     String.valueOf(getHistory().stream().map(t -> String.valueOf(t.getId())).collect(Collectors.joining(",")))); // последней строкой сохраняется список id тасок, которые были в истории вызовов;
         } catch (IOException e) {
-            throw new RuntimeException(); // можно заменить на свое исключение с сообщением
+            throw new RuntimeException();
         }
     }
 
@@ -235,6 +237,3 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return fileBackedTaskManager;
     }
 }
-
-
-

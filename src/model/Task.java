@@ -1,31 +1,30 @@
 package model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Task {
     private Integer id;
     private String name;
     private Status status;
     private String description;
-    private Date startTime;
-    private Date endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 
     public Task(String name, Status status, String description) {
         this.name = name;
         this.status = status;
         this.description = description;
-        this.startTime = new Date();
+        this.startTime = LocalDateTime.now();
     }
 
-    public Task(int id, String name, Status status, String description, Date startTime) {
-        this.id = id;
-        this.name = name;
-        this.status = status;
-        this.description = description;
-        this.startTime = startTime;
-        this.endTime = endTime;
+    public Task() {
     }
-    public int getId() {
+
+    public Task(String name, String description) {
+        this(name, Status.NEW, description);
+    }
+
+    public Integer getId() {
         return id;
     }
 
@@ -49,20 +48,12 @@ public class Task {
 
     public void setDescription(String description) { this.description = description; }
 
-    public Date getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
-    }
-
-    public Date getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime;
-    }
-
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
     }
 
     @Override
@@ -75,9 +66,7 @@ public class Task {
         if (id != task.id) return false;
         if (!name.equals(task.name)) return false;
         if (status != task.status) return false;
-        if (!description.equals(task.description)) return false;
-        if (!startTime.equals(task.startTime)) return false;
-        return endTime != null ? endTime.equals(task.endTime) : task.endTime == null;
+        return description.equals(task.description);
     }
 
     @Override
@@ -93,7 +82,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
+        String task = "Task{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", status=" + status +
@@ -101,6 +90,7 @@ public class Task {
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
                 '}';
+        return task.replaceAll("\r\n", "\n");
     }
 }
 

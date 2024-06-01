@@ -8,6 +8,10 @@ public class SubTask extends Task {
         this.epicId = epicId;
     }
 
+    public SubTask(String name, String description) {
+        super(name, Status.NEW, description);
+    }
+
     public int getEpicId() {
         return epicId;
     }
@@ -32,5 +36,19 @@ public class SubTask extends Task {
         int result = super.hashCode();
         result = 31 * result + epicId;
         return result;
+    }
+
+    @Override
+    public String toString() {
+        String task = "SubTask{" +
+                "id=" + this.getId() +
+                ", name='" + this.getName() + '\'' +
+                ", status=" + this.getStatus() +
+                ", description='" + this.getDescription() + '\'' +
+                ", startTime=" + this.getStartTime() +
+                ", endTime=" + this.getEndTime() +
+                ", epicId=" + this.epicId +
+                '}';
+        return task.replaceAll("\r\n", "\n");
     }
 }

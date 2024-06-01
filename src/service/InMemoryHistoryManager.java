@@ -47,6 +47,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
         @Override
         public List<Task> getHistory() {
+           //if LinkedList
             return new LinkedList<>(history);
         }
 

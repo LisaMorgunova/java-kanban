@@ -42,36 +42,43 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task createTask(Task task) {
-        int id = generateId();
-        task.setId(id);
-        tasks.put(id, task);
-        sortedTasks.add(task);
-        historyManager.add(task);
-        return task;
+        Task newTask = new Task(task.getName(), task.getDescription());
+        Integer id = task.getId();
+        if (id == null)
+            id = generateId();
+        newTask.setId(id);
+        tasks.put(id, newTask);
+        sortedTasks.add(newTask);
+        historyManager.add(newTask);
+        return newTask;
     }
 
     @Override
     public SubTask createSubTask(SubTask subTask) {
+        SubTask newSubtask = new SubTask(subTask.getName(), subTask.getDescription());
         int id = generateId();
-        subTask.setId(id);
-        subTasks.put(id, subTask);
-        sortedTasks.add(subTask);
-        Epic parentEpic = epics.get(subTask.getEpicId());
+        newSubtask.setId(id);
+        newSubtask.setStatus(Status.NEW);
+        newSubtask.setEpicId(subTask.getEpicId());
+        subTasks.put(id, newSubtask);
+        sortedTasks.add(newSubtask);
+        Epic parentEpic = epics.get(newSubtask.getEpicId());
         if (parentEpic != null) {
-            parentEpic.addSubTask(subTask);
+            parentEpic.addSubTask(newSubtask);
         }
-        historyManager.add(subTask);
-        return subTask;
+        historyManager.add(newSubtask);
+        return newSubtask;
     }
 
     @Override
     public Epic createEpic(Epic epic) {
+        Epic newEpic = new Epic(epic.getName(), epic.getDescription());
         int id = generateId();
-        epic.setId(id);
-        epics.put(id, epic);
-        sortedTasks.add(epic);
-        historyManager.add(epic);
-        return epic;
+        newEpic.setId(id);
+        epics.put(id, newEpic);
+        sortedTasks.add(newEpic);
+        historyManager.add(newEpic);
+        return newEpic;
     }
 
     @Override
@@ -147,8 +154,8 @@ public class InMemoryTaskManager implements TaskManager {
     private boolean hasTimeOverlap(Task task) {
         for (Task t : sortedTasks) {
             if (!t.equals(task) &&
-                    ((t.getStartTime().before(task.getStartTime()) && t.getEndTime().after(task.getStartTime())) ||
-                            (t.getStartTime().before(task.getEndTime()) && t.getEndTime().after(task.getEndTime())) ||
+                    ((t.getStartTime().isBefore(task.getStartTime()) && t.getEndTime().isAfter(task.getStartTime())) ||
+                            (t.getStartTime().isBefore(task.getEndTime()) && t.getEndTime().isAfter(task.getEndTime())) ||
                             (t.getStartTime().equals(task.getStartTime())) || t.getEndTime().equals(task.getEndTime()))) {
                 return true;
             }

@@ -1,12 +1,34 @@
+package server;
+
 import model.Epic;
 import model.Status;
 import model.SubTask;
 import model.Task;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import service.Managers;
 import service.TaskManager;
 
-public class Main {
-    public static void main(String[] args) {
+import static org.junit.jupiter.api.Assertions.*;
+
+class HttpTaskServerTest {
+    private HttpTaskServer httpTaskServer;
+
+    @BeforeEach
+    void setUp() {
+        TaskManager manager = Managers.getInMemoryTaskManager();
+        this.httpTaskServer = new HttpTaskServer(manager);
+        httpTaskServer.start();
+    }
+
+    @AfterEach
+    void tearDown() {
+        this.httpTaskServer.stop();
+    }
+
+    @Test
+    void main() {
         TaskManager taskManager = Managers.getDefaultTaskManager();
 
         Task task1 = new Task("Задача 1", Status.NEW, "Описание задачи 1");
