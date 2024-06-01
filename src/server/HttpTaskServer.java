@@ -9,12 +9,13 @@ import service.TaskManager;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.time.LocalDateTime;
 
 public class HttpTaskServer {
 
     private final int PORT;
     public static final Gson gson = new GsonBuilder()
-            .setDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz")
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
             .create();
     private HttpServer server;
 
@@ -30,11 +31,11 @@ public class HttpTaskServer {
             e.printStackTrace();
         }
         assert server != null;
-        server.createContext("/tasks", (HttpHandler) new TaskHandler(manager));
-        server.createContext("/subtasks", (HttpHandler) new SubTaskHandler(manager));
-        server.createContext("/epics", (HttpHandler) new EpicHandler(manager));
-        server.createContext("/history", (HttpHandler) new HistoryHandler(Managers.getDefaultHistoryManager()));
-        server.createContext("/prioritized", (HttpHandler) new PrioritizedHandler(manager));
+        server.createContext("/tasks", new TaskHandler(manager));
+        server.createContext("/subtasks", new SubTaskHandler(manager));
+        server.createContext("/epics", new EpicHandler(manager));
+        server.createContext("/history", new HistoryHandler(Managers.getDefaultHistoryManager()));
+        server.createContext("/prioritized", new PrioritizedHandler(manager));
         server.setExecutor(null);
     }
 

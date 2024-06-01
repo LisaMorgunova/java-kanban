@@ -1,20 +1,20 @@
 package model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class Task {
     private Integer id;
     private String name;
     private Status status;
     private String description;
-    private Date startTime;
-    private Date endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 
     public Task(String name, Status status, String description) {
         this.name = name;
         this.status = status;
         this.description = description;
-        this.startTime = new Date();
+        this.startTime = LocalDateTime.now();
     }
 
     public Task() {
@@ -48,11 +48,11 @@ public class Task {
 
     public void setDescription(String description) { this.description = description; }
 
-    public Date getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public Date getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 
@@ -66,8 +66,7 @@ public class Task {
         if (id != task.id) return false;
         if (!name.equals(task.name)) return false;
         if (status != task.status) return false;
-        if (!description.equals(task.description)) return false;
-        return true;
+        return description.equals(task.description);
     }
 
     @Override

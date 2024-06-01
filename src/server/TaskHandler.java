@@ -1,11 +1,9 @@
 package server;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpServer;
-import service.TaskManager;
 import model.Task;
+import service.TaskManager;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -63,7 +61,7 @@ public class TaskHandler extends BaseHttpHandler {
         int id = Integer.parseInt(exchange.getRequestURI().getPath().split("/")[2]);
         Task task = taskManager.getTaskById(id);
         if (task != null) {
-            sendResponse(exchange, 200, task.toString());
+            sendResponse(exchange, 200, HttpTaskServer.gson.toJson(task));
         } else {
             sendResponse(exchange, 404, "Not Found");
         }

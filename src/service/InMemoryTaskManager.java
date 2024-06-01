@@ -154,8 +154,8 @@ public class InMemoryTaskManager implements TaskManager {
     private boolean hasTimeOverlap(Task task) {
         for (Task t : sortedTasks) {
             if (!t.equals(task) &&
-                    ((t.getStartTime().before(task.getStartTime()) && t.getEndTime().after(task.getStartTime())) ||
-                            (t.getStartTime().before(task.getEndTime()) && t.getEndTime().after(task.getEndTime())) ||
+                    ((t.getStartTime().isBefore(task.getStartTime()) && t.getEndTime().isAfter(task.getStartTime())) ||
+                            (t.getStartTime().isBefore(task.getEndTime()) && t.getEndTime().isAfter(task.getEndTime())) ||
                             (t.getStartTime().equals(task.getStartTime())) || t.getEndTime().equals(task.getEndTime()))) {
                 return true;
             }
